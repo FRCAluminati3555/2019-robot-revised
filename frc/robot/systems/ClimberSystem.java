@@ -69,6 +69,8 @@ public class ClimberSystem implements AluminatiSystem {
                 // Extend
                 pistons.reverse();
             }
+        } else {
+            motor.set(ControlMode.PercentOutput, 0);
         }
     }
 
