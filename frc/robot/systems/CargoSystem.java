@@ -54,7 +54,7 @@ public class CargoSystem implements AluminatiSystem {
         }
 
         if (enabled) {
-            // Control height height
+            // Control height
             if (operatorJoystick.getPOV() == 90) {
                 pistons.reverse();
             } else if (operatorJoystick.getPOV() == 270) {
