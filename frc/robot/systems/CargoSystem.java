@@ -75,6 +75,7 @@ public class CargoSystem implements AluminatiSystem {
                     backMotor.set(ControlMode.PercentOutput, 0);
                 } else {
                     light.disable();
+                    frontMotor.set(ControlMode.PercentOutput, 0);
                     backMotor.set(ControlMode.PercentOutput, 0.5);
                 }
             }
