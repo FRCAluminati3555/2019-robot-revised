@@ -47,6 +47,22 @@ public class ClimberSystem implements AluminatiSystem {
     private AluminatiJoystick driverJoystick;
     private AluminatiJoystick operatorJoystick;
 
+    private boolean auto = false;
+
+    /**
+     * Returns true if the climber is not being controlled by the driver
+     */
+    public boolean isAuto() {
+        return auto;
+    }
+
+    /**
+     * Set to true while the driver is not in control of the climber
+     */
+    public void setAuto(boolean auto) {
+        this.auto = auto;
+    }
+
     public void update(long timestamp, boolean enabled) {
         // Report faults
         if (!motor.isOK()) {
@@ -69,7 +85,7 @@ public class ClimberSystem implements AluminatiSystem {
                 // Extend
                 pistons.reverse();
             }
-        } else {
+        } else if (!auto) {
             motor.set(ControlMode.PercentOutput, 0);
         }
     }

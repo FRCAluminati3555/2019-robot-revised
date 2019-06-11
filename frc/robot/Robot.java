@@ -42,6 +42,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import frc.robot.auto.ModeDoNothing;
+import frc.robot.auto.ModeHabLevel1Floor;
+import frc.robot.auto.ModeHabLevel2Floor;
 import frc.robot.controllers.TurnInPlaceController;
 import frc.robot.systems.CargoSystem;
 import frc.robot.systems.ClimberSystem;
@@ -56,7 +59,7 @@ import frc.robot.systems.HatchSystem;
 
 public class Robot extends AluminatiRobot {
   // Constants
-  public static final String[] AUTO_MODES = { "Manual" };
+  public static final String[] AUTO_MODES = { "Manual", "DoNothing", "HabLevel2Floor", "HabLevel1Floor" };
 
   // Robot state
   private RobotMode robotMode;
@@ -84,11 +87,13 @@ public class Robot extends AluminatiRobot {
     AluminatiData.encoderP = 0.5;
     AluminatiData.encoderI = 0.0001;
     AluminatiData.encoderD = 0.25;
+    AluminatiData.gyroF = 0;
+    AluminatiData.gyroP = 0;
+    AluminatiData.gyroI = 0;
+    AluminatiData.gyroD = 0;
 
-    AluminatiData.gyroF = 0.45;
-    AluminatiData.gyroP = 0.5;
-    AluminatiData.gyroI = 0.0001;
-    AluminatiData.gyroD = 0.25;
+    // Set encoder data (not really needed)
+    AluminatiData.encoderUnitsPerRotation = 1024;
 
     // Set thread priority
     Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
@@ -111,6 +116,9 @@ public class Robot extends AluminatiRobot {
     AluminatiMotorGroup left = new AluminatiMotorGroup(new AluminatiTalonSRX(41), new AluminatiTalonSRX(43));
     AluminatiMotorGroup right = new AluminatiMotorGroup(true, new AluminatiTalonSRX(42), new AluminatiTalonSRX(44));
     AluminatiPigeon gyro = new AluminatiPigeon(left.getMotors()[1]);
+
+    left.getMaster().setSensorPhase(true);
+    right.getMaster().setSensorPhase(true);
     driveSystem = new DriveSystem(left, right, gyro, driverJoystick);
 
     // Setup limelight
@@ -256,13 +264,25 @@ public class Robot extends AluminatiRobot {
    * Loads the selected auto into autoTask
    */
   private void loadAutoMode() {
-    String auto = NetworkTableInstance.getDefault().getTable("SmartDashboard").getEntry("Auto Mode")
+    String auto = NetworkTableInstance.getDefault().getTable("SmartDashboard").getEntry("Auto Selector")
         .getString("Manual");
 
     if (auto.equals(AUTO_MODES[0])) {
       // Manual
 
-      // Do nothing
+      autoTask = null;
+    } else if (auto.equals(AUTO_MODES[1])) {
+      // DoNothing
+
+      autoTask = new ModeDoNothing();
+    } else if (auto.equals(AUTO_MODES[2])) {
+      // HabLevel2Floor
+
+      autoTask = new ModeHabLevel2Floor(driveSystem);
+    } else if (auto.equals(AUTO_MODES[3])) {
+      // HabLevel1Floor
+
+      autoTask = new ModeHabLevel1Floor(driveSystem);
     }
   }
 
@@ -270,6 +290,15 @@ public class Robot extends AluminatiRobot {
    * Controls the robot during auto
    */
   private void autoControl(long timestamp) {
+    if (driverJoystick.getRawButtonPressed(11)) {
+      // Stop task and cleanup
+      autoTask.stop();
+      robotMode = RobotMode.OPERATOR_CONTROL;
+
+      // Put drive in coast mode
+      driveSystem.coast();
+    }
+
     if (robotMode == RobotMode.OPERATOR_CONTROL) {
       driveSystem.coast();
 
@@ -280,7 +309,7 @@ public class Robot extends AluminatiRobot {
       } else {
         limelight.setPipeline(1);
       }
-    } else if (autoTask != null || driverJoystick.getRawButtonPressed(11)) {
+    } else if (autoTask != null) {
       if (autoTask.isComplete()) {
         // Stop task and cleanup
         autoTask.stop();
