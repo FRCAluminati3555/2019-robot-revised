@@ -24,79 +24,46 @@ package frc.robot.auto;
 
 import org.aluminati3555.auto.AluminatiAutoTask;
 
-import frc.robot.controllers.PIDTurnController;
 import frc.robot.systems.DriveSystem;
 
 /**
- * This action turns the robot using the gyro sensor and a pid control loop
+ * This auto mode makes a 90 degree turn
  * 
  * @author Caleb Heydon
  */
-public class ActionTurnToYaw implements AluminatiAutoTask {
-    private static final double MIN_OUTPUT = 0.05;
-
-    private boolean running;
-    private double targetAngle;
-    private long maxTime;
-    private long delay;
-
-    private long startTime;
-
+public class ModeExampleTurn implements AluminatiAutoTask {
     private DriveSystem driveSystem;
-
-    private PIDTurnController controller;
+    private AluminatiAutoTask task;
 
     public void start(long timestamp) {
-        this.startTime = timestamp;
-
-        // Creat new PID controller
-        this.controller = new PIDTurnController(0.01, 0, 0, 0, MIN_OUTPUT, 0.75, maxTime, timestamp);
-
-        running = true;
+        driveSystem.getGyro().zeroYaw();
+        task.start(timestamp);
     }
 
     public void update(long timestamp) {
-        if (timestamp < startTime + delay) {
-            return;
-        }
-
-        if (running) {
-            double output = -controller.update(targetAngle, driveSystem.getGyro().getYaw(), timestamp);
-
-            // Stop when the robot is near the target
-            if (Math.abs(output) == MIN_OUTPUT) {
-                output = 0;
-            }
-
-            // Check if complete
-            if (output == 0) {
-                running = false;
-            }
-
-            driveSystem.manualArcadeDrive(output, 0);
-        }
+        task.update(timestamp);
     }
 
     public void stop() {
-        running = false;
-        driveSystem.manualArcadeDrive(0, 0);
+        if (task != null) {
+            task.stop();
+        }
     }
 
-    public boolean isComplete() {
-        return !running;
-    }
-
-    /**
-     * This method does nothing in this action
-     */
     public void advanceState() {
 
     }
 
-    public ActionTurnToYaw(double targetAngle, long maxTime, long delay, DriveSystem driveSystem) {
-        this.targetAngle = targetAngle;
-        this.maxTime = maxTime;
+    public boolean isComplete() {
+        if (task == null) {
+            return true;
+        }
 
+        return task.isComplete();
+    }
+
+    public ModeExampleTurn(DriveSystem driveSystem) {
         this.driveSystem = driveSystem;
+        this.task = new ActionTurnToYaw(-90, 1000, 40, driveSystem);
     }
 }

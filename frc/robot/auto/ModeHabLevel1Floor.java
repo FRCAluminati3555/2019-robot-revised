@@ -24,7 +24,7 @@ package frc.robot.auto;
 
 import org.aluminati3555.auto.AluminatiAutoTask;
 
-import frc.paths.HabLevel1FloorPath;
+import frc.paths.PathHabLevel1Floor;
 import frc.robot.systems.DriveSystem;
 
 /**
@@ -36,7 +36,7 @@ public class ModeHabLevel1Floor implements AluminatiAutoTask {
     private DriveSystem driveSystem;
 
     public void start(long timestamp) {
-        driveSystem.startMP(new HabLevel1FloorPath());
+        driveSystem.startMP(new PathHabLevel1Floor());
     }
 
     public void update(long timestamp) {

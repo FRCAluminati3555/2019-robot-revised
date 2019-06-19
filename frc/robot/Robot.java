@@ -40,12 +40,17 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.auto.ModeDoNothing;
+import frc.robot.auto.ModeExample;
+import frc.robot.auto.ModeExampleTurn;
+import frc.robot.auto.ModeGrabHatch;
 import frc.robot.auto.ModeHabLevel1Floor;
 import frc.robot.auto.ModeHabLevel2Floor;
-import frc.robot.controllers.TurnInPlaceController;
+import frc.robot.auto.ModePlaceHatch;
 import frc.robot.systems.CargoSystem;
 import frc.robot.systems.ClimberSystem;
 import frc.robot.systems.DriveSystem;
@@ -59,11 +64,14 @@ import frc.robot.systems.HatchSystem;
 
 public class Robot extends AluminatiRobot {
   // Constants
-  public static final String[] AUTO_MODES = { "Manual", "DoNothing", "HabLevel2Floor", "HabLevel1Floor" };
+  public static final String[] AUTO_MODES = { "Manual", "DoNothing", "HabLevel2Floor", "HabLevel1Floor", "Example",
+      "ExampleTurn", "PlaceHatch", "GrabHatch" };
 
   // Robot state
   private RobotMode robotMode;
   private AluminatiAutoTask autoTask;
+
+  private boolean matchStarted;
 
   // Power distribution
   private PowerDistributionPanel pdp;
@@ -84,13 +92,14 @@ public class Robot extends AluminatiRobot {
   public void robotInit() {
     // Configure pid
     AluminatiData.encoderF = 0.45;
-    AluminatiData.encoderP = 0.5;
+    AluminatiData.encoderP = 0.75;
     AluminatiData.encoderI = 0.0001;
     AluminatiData.encoderD = 0.25;
-    AluminatiData.gyroF = 0;
-    AluminatiData.gyroP = 0;
-    AluminatiData.gyroI = 0;
-    AluminatiData.gyroD = 0;
+
+    AluminatiData.gyroF = 0.45;
+    AluminatiData.gyroP = 0.75;
+    AluminatiData.gyroI = 0.0001;
+    AluminatiData.gyroD = 0.25;
 
     // Set encoder data (not really needed)
     AluminatiData.encoderUnitsPerRotation = 1024;
@@ -112,41 +121,17 @@ public class Robot extends AluminatiRobot {
     driverJoystick = new AluminatiJoystick(1);
     operatorJoystick = new AluminatiJoystick(0);
 
-    // Setup drivetrain
-    AluminatiMotorGroup left = new AluminatiMotorGroup(new AluminatiTalonSRX(41), new AluminatiTalonSRX(43));
-    AluminatiMotorGroup right = new AluminatiMotorGroup(true, new AluminatiTalonSRX(42), new AluminatiTalonSRX(44));
-    AluminatiPigeon gyro = new AluminatiPigeon(left.getMotors()[1]);
-
-    left.getMaster().setSensorPhase(true);
-    right.getMaster().setSensorPhase(true);
-    driveSystem = new DriveSystem(left, right, gyro, driverJoystick);
-
-    // Setup limelight
-    limelight = new AluminatiLimelight();
-    limelight.setPipeline(0);
-    limelight.setLEDMode(AluminatiLimelight.LEDMode.OFF);
-
-    // Setup compressor
-    compressor = new AluminatiCompressor();
-    compressor.start();
-
-    // Setup climber
-    climberSystem = new ClimberSystem(new AluminatiTalonSRX(45), new DigitalInput(9), new AluminatiDoubleSolenoid(4, 5),
-        driverJoystick, operatorJoystick);
-
-    // Setup cargo handler
-    cargoSystem = new CargoSystem(new AluminatiVictorSPX(46), new AluminatiVictorSPX(47), new Ultrasonic(1, 0),
-        new AluminatiDoubleSolenoid(6, 7), new AluminatiRelay(0), operatorJoystick);
-
-    // Setup hatch mechanism
-    hatchSystem = new HatchSystem(new AluminatiDoubleSolenoid(2, 3), new AluminatiDoubleSolenoid(0, 1), driveSystem,
-        new TurnInPlaceController(0.07, 0, 0.2, 0.25, 0.4), limelight, driverJoystick, operatorJoystick);
+    // Configure systems
+    configureSystems();
 
     // Start camera
     AluminatiCameraHelper.start(0);
 
     // Display auto modes on dashboard
     sendAutoModes();
+
+    // Start data reporter
+    startDataReporter();
   }
 
   @Override
@@ -169,6 +154,11 @@ public class Robot extends AluminatiRobot {
       driveSystem.coast();
     }
 
+    // Zero gyro if waiting for match to start
+    if (!matchStarted) {
+      driveSystem.getGyro().zeroYaw();
+    }
+
     // Update systems
     long timestamp = System.currentTimeMillis();
     driveSystem.update(timestamp, false);
@@ -179,8 +169,15 @@ public class Robot extends AluminatiRobot {
 
   @Override
   public void autonomousInit() {
+    matchStarted = true;
+
     // Set brake mode
     driveSystem.brake();
+
+    // Stop auto task if one is running
+    if (autoTask != null) {
+      autoTask.stop();
+    }
 
     // Put limelight into camera mode and put leds back in pipeline mode
     limelight.setPipeline(1);
@@ -208,6 +205,8 @@ public class Robot extends AluminatiRobot {
 
   @Override
   public void teleopInit() {
+    matchStarted = true;
+
     // Set coast mode
     driveSystem.coast();
 
@@ -254,6 +253,41 @@ public class Robot extends AluminatiRobot {
   }
 
   /**
+   * Configures the robot systems
+   */
+  private void configureSystems() {
+    // Setup drivetrain
+    AluminatiMotorGroup left = new AluminatiMotorGroup(new AluminatiTalonSRX(41), new AluminatiTalonSRX(43));
+    AluminatiMotorGroup right = new AluminatiMotorGroup(true, new AluminatiTalonSRX(42), new AluminatiTalonSRX(44));
+    AluminatiPigeon gyro = new AluminatiPigeon(left.getMotors()[1]);
+
+    left.getMaster().setSensorPhase(true);
+    right.getMaster().setSensorPhase(true);
+    driveSystem = new DriveSystem(left, right, gyro, driverJoystick);
+
+    // Setup limelight
+    limelight = new AluminatiLimelight();
+    limelight.setPipeline(0);
+    limelight.setLEDMode(AluminatiLimelight.LEDMode.OFF);
+
+    // Setup compressor
+    compressor = new AluminatiCompressor();
+    compressor.start();
+
+    // Setup climber
+    climberSystem = new ClimberSystem(new AluminatiTalonSRX(45), new DigitalInput(9), new AluminatiDoubleSolenoid(4, 5),
+        driverJoystick, operatorJoystick);
+
+    // Setup cargo handler
+    cargoSystem = new CargoSystem(new AluminatiVictorSPX(46), new AluminatiVictorSPX(47), new Ultrasonic(1, 0),
+        new AluminatiDoubleSolenoid(6, 7), new AluminatiRelay(0), operatorJoystick);
+
+    // Setup hatch mechanism
+    hatchSystem = new HatchSystem(new AluminatiDoubleSolenoid(2, 3), new AluminatiDoubleSolenoid(0, 1), driveSystem,
+        limelight, driverJoystick, operatorJoystick);
+  }
+
+  /**
    * Sends the auto modes to the dashboard
    */
   private void sendAutoModes() {
@@ -283,6 +317,22 @@ public class Robot extends AluminatiRobot {
       // HabLevel1Floor
 
       autoTask = new ModeHabLevel1Floor(driveSystem);
+    } else if (auto.equals(AUTO_MODES[4])) {
+      // Example
+
+      autoTask = new ModeExample(driveSystem);
+    } else if (auto.equals(AUTO_MODES[5])) {
+      // ExampleTurn
+
+      autoTask = new ModeExampleTurn(driveSystem);
+    } else if (auto.equals(AUTO_MODES[6])) {
+      // PlaceHatch
+
+      autoTask = new ModePlaceHatch(driveSystem, hatchSystem, limelight);
+    } else if (auto.equals(AUTO_MODES[7])) {
+      // GrabHatch
+
+      autoTask = new ModeGrabHatch(driveSystem, hatchSystem, limelight);
     }
   }
 
@@ -323,7 +373,34 @@ public class Robot extends AluminatiRobot {
     }
   }
 
+  /**
+   * Starts the data reporter
+   */
+  private void startDataReporter() {
+    Thread dataReporter = new Thread(new DataReporter());
+    dataReporter.setName("DataReporter");
+    dataReporter.setDaemon(true);
+    dataReporter.setPriority(Thread.MIN_PRIORITY);
+    dataReporter.start();
+  }
+
   private enum RobotMode {
     AUTONOMOUS, OPERATOR_CONTROL
+  }
+
+  private class DataReporter implements Runnable {
+    public void run() {
+      while (true) {
+        // Stop data reporting if connected to the FMS
+        if (DriverStation.getInstance().isFMSAttached()) {
+          return;
+        }
+
+        SmartDashboard.putNumber("leftPower", driveSystem.getLeftGroup().getMaster().getMotorOutputPercent());
+        SmartDashboard.putNumber("rightPower", driveSystem.getRightGroup().getMaster().getMotorOutputPercent());
+
+        Timer.delay(0.05);
+      }
+    }
   }
 }

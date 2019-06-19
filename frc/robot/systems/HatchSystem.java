@@ -148,14 +148,14 @@ public class HatchSystem implements AluminatiSystem {
     }
 
     public HatchSystem(AluminatiDoubleSolenoid extender, AluminatiDoubleSolenoid clamper, DriveSystem driveSystem,
-            TurnInPlaceController controller, AluminatiLimelight limelight, AluminatiJoystick driverJoystick,
-            AluminatiJoystick operatorJoystick) {
+            AluminatiLimelight limelight, AluminatiJoystick driverJoystick, AluminatiJoystick operatorJoystick) {
         this.extender = extender;
         this.clamper = clamper;
         this.driveSystem = driveSystem;
-        this.controller = controller;
         this.limelight = limelight;
         this.driverJoystick = driverJoystick;
         this.operatorJoystick = operatorJoystick;
+
+        this.controller = new TurnInPlaceController(0.07, 0, 0.2, 0.25, 0.4);
     }
 }

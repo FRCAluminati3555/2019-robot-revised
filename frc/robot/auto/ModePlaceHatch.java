@@ -23,28 +23,29 @@
 package frc.robot.auto;
 
 import org.aluminati3555.auto.AluminatiAutoTask;
+import org.aluminati3555.vision.AluminatiLimelight;
 
-import frc.paths.PathHabLevel2Floor;
 import frc.robot.systems.DriveSystem;
+import frc.robot.systems.HatchSystem;
 
 /**
- * This auto mode gets the robot down from level 2 backwards
+ * This auto mode places a hatch at the first visible target
  * 
  * @author Caleb Heydon
  */
-public class ModeHabLevel2Floor implements AluminatiAutoTask {
-    private DriveSystem driveSystem;
+public class ModePlaceHatch implements AluminatiAutoTask {
+    private AluminatiAutoTask task;
 
     public void start(long timestamp) {
-        driveSystem.startMP(new PathHabLevel2Floor());
+        task.start(timestamp);
     }
 
     public void update(long timestamp) {
-
+        task.update(timestamp);
     }
 
     public void stop() {
-        driveSystem.stopMP();
+        task.stop();
     }
 
     public void advanceState() {
@@ -52,10 +53,10 @@ public class ModeHabLevel2Floor implements AluminatiAutoTask {
     }
 
     public boolean isComplete() {
-        return driveSystem.isMPDone();
+        return task.isComplete();
     }
 
-    public ModeHabLevel2Floor(DriveSystem driveSystem) {
-        this.driveSystem = driveSystem;
+    public ModePlaceHatch(DriveSystem driveSystem, HatchSystem hatchSystem, AluminatiLimelight limelight) {
+        this.task = new ActionAutoPlaceHatch(driveSystem, hatchSystem, limelight);
     }
 }

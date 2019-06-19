@@ -24,19 +24,19 @@ package frc.robot.auto;
 
 import org.aluminati3555.auto.AluminatiAutoTask;
 
-import frc.paths.PathHabLevel2Floor;
+import frc.paths.PathExample;
 import frc.robot.systems.DriveSystem;
 
 /**
- * This auto mode gets the robot down from level 2 backwards
+ * This is an example auto mode
  * 
  * @author Caleb Heydon
  */
-public class ModeHabLevel2Floor implements AluminatiAutoTask {
+public class ModeExample implements AluminatiAutoTask {
     private DriveSystem driveSystem;
 
     public void start(long timestamp) {
-        driveSystem.startMP(new PathHabLevel2Floor());
+        driveSystem.startMP(new PathExample());
     }
 
     public void update(long timestamp) {
@@ -55,7 +55,7 @@ public class ModeHabLevel2Floor implements AluminatiAutoTask {
         return driveSystem.isMPDone();
     }
 
-    public ModeHabLevel2Floor(DriveSystem driveSystem) {
+    public ModeExample(DriveSystem driveSystem) {
         this.driveSystem = driveSystem;
     }
 }
