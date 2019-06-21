@@ -48,6 +48,7 @@ import frc.robot.auto.ModeDoNothing;
 import frc.robot.auto.ModeExample;
 import frc.robot.auto.ModeExampleTurn;
 import frc.robot.auto.ModeGrabHatch;
+import frc.robot.auto.ModeHabLevel1CargoFrontHatch;
 import frc.robot.auto.ModeHabLevel1Floor;
 import frc.robot.auto.ModeHabLevel2Floor;
 import frc.robot.auto.ModePlaceHatch;
@@ -64,8 +65,8 @@ import frc.robot.systems.HatchSystem;
 
 public class Robot extends AluminatiRobot {
   // Constants
-  public static final String[] AUTO_MODES = { "Manual", "DoNothing", "HabLevel2Floor", "HabLevel1Floor", "Example",
-      "ExampleTurn", "PlaceHatch", "GrabHatch" };
+  public static final String[] AUTO_MODES = { "Manual", "DoNothing", "HabLevel2Floor", "HabLevel1Floor",
+      "HabLevel1CargoFrontHatch", "Example", "ExampleTurn", "PlaceHatch", "GrabHatch" };
 
   // Robot state
   private RobotMode robotMode;
@@ -197,10 +198,12 @@ public class Robot extends AluminatiRobot {
     autoControl(timestamp);
 
     // Update systems
-    driveSystem.update(timestamp, (robotMode == RobotMode.OPERATOR_CONTROL));
-    climberSystem.update(timestamp, (robotMode == RobotMode.OPERATOR_CONTROL));
-    cargoSystem.update(timestamp, (robotMode == RobotMode.OPERATOR_CONTROL));
-    hatchSystem.update(timestamp, (robotMode == RobotMode.OPERATOR_CONTROL));
+    boolean enabled = (robotMode == RobotMode.OPERATOR_CONTROL);
+
+    driveSystem.update(timestamp, enabled);
+    climberSystem.update(timestamp, enabled);
+    cargoSystem.update(timestamp, enabled);
+    hatchSystem.update(timestamp, enabled);
   }
 
   @Override
@@ -230,10 +233,12 @@ public class Robot extends AluminatiRobot {
     autoControl(timestamp);
 
     // Update systems
-    driveSystem.update(timestamp, (robotMode == RobotMode.OPERATOR_CONTROL));
-    climberSystem.update(timestamp, (robotMode == RobotMode.OPERATOR_CONTROL));
-    cargoSystem.update(timestamp, (robotMode == RobotMode.OPERATOR_CONTROL));
-    hatchSystem.update(timestamp, (robotMode == RobotMode.OPERATOR_CONTROL));
+    boolean enabled = (robotMode == RobotMode.OPERATOR_CONTROL);
+
+    driveSystem.update(timestamp, enabled);
+    climberSystem.update(timestamp, enabled);
+    cargoSystem.update(timestamp, enabled);
+    hatchSystem.update(timestamp, enabled);
   }
 
   @Override
@@ -318,18 +323,22 @@ public class Robot extends AluminatiRobot {
 
       autoTask = new ModeHabLevel1Floor(driveSystem);
     } else if (auto.equals(AUTO_MODES[4])) {
+      // HabLevel1CargoFrontHatch
+
+      autoTask = new ModeHabLevel1CargoFrontHatch(driveSystem, hatchSystem, limelight);
+    } else if (auto.equals(AUTO_MODES[5])) {
       // Example
 
       autoTask = new ModeExample(driveSystem);
-    } else if (auto.equals(AUTO_MODES[5])) {
+    } else if (auto.equals(AUTO_MODES[6])) {
       // ExampleTurn
 
       autoTask = new ModeExampleTurn(driveSystem);
-    } else if (auto.equals(AUTO_MODES[6])) {
+    } else if (auto.equals(AUTO_MODES[7])) {
       // PlaceHatch
 
       autoTask = new ModePlaceHatch(driveSystem, hatchSystem, limelight);
-    } else if (auto.equals(AUTO_MODES[7])) {
+    } else if (auto.equals(AUTO_MODES[8])) {
       // GrabHatch
 
       autoTask = new ModeGrabHatch(driveSystem, hatchSystem, limelight);
