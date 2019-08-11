@@ -62,7 +62,6 @@ import frc.robot.systems.HatchSystem;
  * 
  * @author Caleb Heydon
  */
-
 public class Robot extends AluminatiRobot {
   // Constants
   public static final String[] AUTO_MODES = { "Manual", "DoNothing", "HabLevel2Floor", "HabLevel1Floor",

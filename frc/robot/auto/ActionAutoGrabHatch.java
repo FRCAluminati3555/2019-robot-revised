@@ -62,10 +62,13 @@ public class ActionAutoGrabHatch implements AluminatiAutoTask {
 
             double area = limelight.getArea();
             if (area < TARGET) {
-                double forward = limelight.hasTarget() ? -forwardController.update(TARGET, area, timestamp) : 0;
+                boolean hasTarget = limelight.hasTarget();
+                double turn = hasTarget
+                        ? -turnController.update(0, limelight.getX(), Timer.getFPGATimestamp())
+                        : 0;
+                double forward = hasTarget ? -forwardController.update(TARGET, area, timestamp) : 0;
 
-                driveSystem.manualArcadeDrive(-turnController.update(0, limelight.getX(), Timer.getFPGATimestamp()),
-                        forward);
+                driveSystem.manualArcadeDrive(turn, forward);
             } else {
                 driveSystem.manualArcadeDrive(0, 0);
                 state = State.GRABBING;
