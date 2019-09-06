@@ -68,6 +68,10 @@ public class DriveSystem extends AluminatiDrive implements AluminatiSystem {
             DriverStation.reportError("Encoder failure detected in the right side of the drive", false);
         }
 
+        if (!this.getGyro().isOK()) {
+            DriverStation.reportError("Gyro fault detected", false);
+        }
+
         if (enabled) {
             if (driverJoystick.getRawButtonPressed(2)) {
                 if (!this.isInverted()) {
