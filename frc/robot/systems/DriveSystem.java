@@ -69,7 +69,7 @@ public class DriveSystem extends AluminatiDrive implements AluminatiSystem {
         }
 
         if (enabled) {
-            if (driverJoystick.getRawButtonPressed(10)) {
+            if (driverJoystick.getRawButtonPressed(2)) {
                 if (!this.isInverted()) {
                     this.setInverted(true);
                 } else {

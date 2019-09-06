@@ -54,15 +54,12 @@ public class CargoSystem implements AluminatiSystem {
         }
 
         if (enabled) {
-            // Control height
+            // Control height and intake
             if (operatorJoystick.getPOV() == 90) {
                 pistons.reverse();
             } else if (operatorJoystick.getPOV() == 270) {
                 pistons.forward();
-            }
-
-            // Control intake
-            if (operatorJoystick.getPOV() == 0) {
+            } else if (operatorJoystick.getPOV() == 0) {
                 frontMotor.set(ControlMode.PercentOutput, 0.65);
                 backMotor.set(ControlMode.PercentOutput, 0.65);
             } else if (operatorJoystick.getPOV() == 180) {
@@ -78,6 +75,9 @@ public class CargoSystem implements AluminatiSystem {
                     frontMotor.set(ControlMode.PercentOutput, 0);
                     backMotor.set(ControlMode.PercentOutput, 0.5);
                 }
+            } else {
+                frontMotor.set(ControlMode.PercentOutput, 0);
+                backMotor.set(ControlMode.PercentOutput, 0);
             }
         } else {
             frontMotor.set(ControlMode.PercentOutput, 0);

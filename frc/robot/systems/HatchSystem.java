@@ -50,7 +50,7 @@ public class HatchSystem implements AluminatiSystem {
     private AluminatiJoystick operatorJoystick;
 
     // Mechanism action
-    AluminatiAutoTask action;
+    private AluminatiAutoTask action;
 
     public void update(long timestamp, boolean enabled) {
         if (enabled) {
@@ -61,7 +61,7 @@ public class HatchSystem implements AluminatiSystem {
                 driveSystem.setUsingLimelight(false);
             }
 
-            if (operatorJoystick.getRawButtonPressed(4) || driverJoystick.getRawButtonPressed(6)) {
+            if (operatorJoystick.getRawButtonPressed(4) | driverJoystick.getRawButtonPressed(6)) {
                 // Start grabbing hatch
 
                 // Stop an action if there is one running
@@ -72,14 +72,14 @@ public class HatchSystem implements AluminatiSystem {
                 // Create new action
                 action = new ActionGrabHatch(this);
                 action.start(timestamp);
-            } else if (operatorJoystick.getRawButtonReleased(4) || driverJoystick.getRawButtonReleased(6)) {
+            } else if (operatorJoystick.getRawButtonReleased(4) | driverJoystick.getRawButtonReleased(6)) {
                 // Advance state machine
                 if (action != null) {
                     action.advanceState();
                 }
             }
 
-            if (operatorJoystick.getRawButtonPressed(6) || driverJoystick.getRawButtonPressed(7)) {
+            if (operatorJoystick.getRawButtonPressed(6) | driverJoystick.getRawButtonPressed(7)) {
                 // Start placing hatch
 
                 // Stop an action if there is one running
@@ -90,7 +90,7 @@ public class HatchSystem implements AluminatiSystem {
                 // Create new action
                 action = new ActionPlaceHatch(this);
                 action.start(timestamp);
-            } else if (operatorJoystick.getRawButtonReleased(6) || driverJoystick.getRawButtonReleased(7)) {
+            } else if (operatorJoystick.getRawButtonReleased(6) | driverJoystick.getRawButtonReleased(7)) {
                 // Advance state machine
                 if (action != null) {
                     action.advanceState();
