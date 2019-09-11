@@ -79,7 +79,12 @@ public class CargoSystem implements AluminatiSystem {
                 frontMotor.set(ControlMode.PercentOutput, 0);
                 backMotor.set(ControlMode.PercentOutput, 0);
             }
+
+            if (!operatorJoystick.getRawButton(12)) {
+                light.disable();
+            }
         } else {
+            light.disable();
             frontMotor.set(ControlMode.PercentOutput, 0);
             backMotor.set(ControlMode.PercentOutput, 0);
         }

@@ -107,7 +107,7 @@ public class ActionAutoPlaceHatch implements AluminatiAutoTask {
         this.limelight = limelight;
 
         this.task = new ActionPlaceHatch(hatchSystem);
-        this.turnController = new TurnInPlaceController(0.07, 0, 0.2, 0.25, 0.4);
+        this.turnController = new TurnInPlaceController(0.07, 0, 0.2, 0.25, 0.2);
         this.forwardController = new PIDTurnController(0.1, 0, 0, 0, 0.1, 0.5, 0, 0);
     }
 

@@ -140,8 +140,8 @@ public class HatchSystem implements AluminatiSystem {
             driveSystem.setUsingLimelight(true);
             double x = limelight.getX();
 
-            // Note that the joystick is not squared here
-            driveSystem.manualArcadeDrive(-controller.update(0, x, Timer.getFPGATimestamp()), driverJoystick.getY());
+            // Note that only the y joystick value is squared here
+            driveSystem.manualArcadeDrive(-controller.update(0, x, Timer.getFPGATimestamp()), driverJoystick.getSquaredY());
         } else {
             driveSystem.setUsingLimelight(false);
         }
@@ -156,6 +156,6 @@ public class HatchSystem implements AluminatiSystem {
         this.driverJoystick = driverJoystick;
         this.operatorJoystick = operatorJoystick;
 
-        this.controller = new TurnInPlaceController(0.07, 0, 0.2, 0.25, 0.4);
+        this.controller = new TurnInPlaceController(0.07, 0, 0.2, 0.25, 0.2);
     }
 }
