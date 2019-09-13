@@ -98,7 +98,7 @@ public class CargoSystem implements AluminatiSystem {
         this.pistons = pistons;
         this.light = light;
         this.operatorJoystick = operatorJoystick;
-        
+
         frontMotor.configOpenloopRamp(0.1);
         backMotor.configOpenloopRamp(0.1);
 

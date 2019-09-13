@@ -44,7 +44,7 @@ public class ActionWait implements AluminatiAutoTask {
     }
 
     public void stop() {
-        
+
     }
 
     public void advanceState() {

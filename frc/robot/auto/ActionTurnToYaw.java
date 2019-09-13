@@ -34,6 +34,7 @@ import frc.robot.systems.DriveSystem;
  */
 public class ActionTurnToYaw implements AluminatiAutoTask {
     private static final double MIN_OUTPUT = 0.05;
+    private static final double MAX_OUTPUT = 0.5625;
 
     private boolean running;
     private double targetAngle;
@@ -50,7 +51,7 @@ public class ActionTurnToYaw implements AluminatiAutoTask {
         this.startTime = timestamp;
 
         // Creat new PID controller
-        this.controller = new PIDTurnController(0.01, 0, 0, 0, MIN_OUTPUT, 0.75, maxTime, timestamp);
+        this.controller = new PIDTurnController(0.002, 0, 0, 0, MIN_OUTPUT, MAX_OUTPUT, maxTime, timestamp);
 
         running = true;
     }
