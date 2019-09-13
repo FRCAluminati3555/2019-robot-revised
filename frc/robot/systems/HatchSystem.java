@@ -156,6 +156,6 @@ public class HatchSystem implements AluminatiSystem {
         this.driverJoystick = driverJoystick;
         this.operatorJoystick = operatorJoystick;
 
-        this.controller = new TurnInPlaceController(0.015, 0, 0.2, 0.25, 0.16);
+        this.controller = new TurnInPlaceController(0.015, 0, 0.2, 0.35, 0.16);
     }
 }

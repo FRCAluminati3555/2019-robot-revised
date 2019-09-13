@@ -107,7 +107,7 @@ public class ActionAutoGrabHatch implements AluminatiAutoTask {
         this.limelight = limelight;
 
         this.task = new ActionGrabHatch(hatchSystem);
-        this.turnController = new TurnInPlaceController(0.015, 0, 0.2, 0.25, 0.16);
+        this.turnController = new TurnInPlaceController(0.015, 0, 0.2, 0.35, 0.16);
         this.forwardController = new PIDTurnController(0.1, 0, 0, 0, 0.25, 0.5, 0, 0);
     }
 
