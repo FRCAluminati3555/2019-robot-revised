@@ -36,7 +36,7 @@ public class ActionHabLevel1RightDoubleRocketPart2 implements AluminatiAutoTask 
     private DriveSystem driveSystem;
 
     public void start(long timestamp) {
-        driveSystem.startMP(new PathHabLevel1DoubleRocketPart2());
+        driveSystem.startMP(new PathHabLevel1DoubleRocketPart2(), false);
     }
 
     public void update(long timestamp) {
