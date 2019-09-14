@@ -24,30 +24,27 @@ package frc.robot.auto;
 
 import org.aluminati3555.auto.AluminatiAutoTask;
 
+import frc.paths.PathHabLevel1DoubleRocketPart2;
 import frc.robot.systems.DriveSystem;
 
 /**
- * This auto mode makes a 90 degree turn
+ * This action plays the HabLevel1DoubleRocketPart2 motion profile
  * 
  * @author Caleb Heydon
  */
-public class ModeExampleTurn implements AluminatiAutoTask {
+public class ActionHabLevel1RightDoubleRocketPart2 implements AluminatiAutoTask {
     private DriveSystem driveSystem;
-    private AluminatiAutoTask task;
 
     public void start(long timestamp) {
-        driveSystem.getGyro().zeroYaw();
-        task.start(timestamp);
+        driveSystem.startMP(new PathHabLevel1DoubleRocketPart2());
     }
 
     public void update(long timestamp) {
-        task.update(timestamp);
+
     }
 
     public void stop() {
-        if (task != null) {
-            task.stop();
-        }
+        driveSystem.stopMP();
     }
 
     public void advanceState() {
@@ -55,15 +52,10 @@ public class ModeExampleTurn implements AluminatiAutoTask {
     }
 
     public boolean isComplete() {
-        if (task == null) {
-            return true;
-        }
-
-        return task.isComplete();
+        return driveSystem.isMPDone();
     }
 
-    public ModeExampleTurn(DriveSystem driveSystem) {
+    public ActionHabLevel1RightDoubleRocketPart2(DriveSystem driveSystem) {
         this.driveSystem = driveSystem;
-        this.task = new ActionTurnToYaw(-90, 1000, driveSystem);
     }
 }

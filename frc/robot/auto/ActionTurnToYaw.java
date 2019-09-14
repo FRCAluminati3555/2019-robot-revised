@@ -94,7 +94,7 @@ public class ActionTurnToYaw implements AluminatiAutoTask {
 
     }
 
-    public ActionTurnToYaw(double targetAngle, long maxTime, long delay, DriveSystem driveSystem) {
+    public ActionTurnToYaw(double targetAngle, long maxTime, DriveSystem driveSystem) {
         this.targetAngle = targetAngle;
         this.maxTime = maxTime;
 

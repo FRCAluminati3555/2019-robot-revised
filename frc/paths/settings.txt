@@ -1,0 +1,8 @@
+Max velocity: 110 ft/s
+Max acceleration: 80 ft/s^2
+
+Width: 33.315in
+Length: 38.63in
+Wheel distance: 21.868in
+Wheel diameter: 6in
+Encoder ticks: 4096

@@ -23,31 +23,30 @@
 package frc.robot.auto;
 
 import org.aluminati3555.auto.AluminatiAutoTask;
+import org.aluminati3555.auto.AluminatiAutoTaskList;
+import org.aluminati3555.vision.AluminatiLimelight;
 
 import frc.robot.systems.DriveSystem;
+import frc.robot.systems.HatchSystem;
 
 /**
- * This auto mode makes a 90 degree turn
+ * This auto mode places two hatches on the right rocket starting from level 1
  * 
  * @author Caleb Heydon
  */
-public class ModeExampleTurn implements AluminatiAutoTask {
-    private DriveSystem driveSystem;
-    private AluminatiAutoTask task;
+public class ModeHabLevel1RightDoubleRocket implements AluminatiAutoTask {
+    private AluminatiAutoTaskList taskList;
 
     public void start(long timestamp) {
-        driveSystem.getGyro().zeroYaw();
-        task.start(timestamp);
+        taskList.start(timestamp);
     }
 
     public void update(long timestamp) {
-        task.update(timestamp);
+        taskList.update(timestamp);
     }
 
     public void stop() {
-        if (task != null) {
-            task.stop();
-        }
+        taskList.stop();
     }
 
     public void advanceState() {
@@ -55,15 +54,20 @@ public class ModeExampleTurn implements AluminatiAutoTask {
     }
 
     public boolean isComplete() {
-        if (task == null) {
-            return true;
-        }
-
-        return task.isComplete();
+        return taskList.isComplete();
     }
 
-    public ModeExampleTurn(DriveSystem driveSystem) {
-        this.driveSystem = driveSystem;
-        this.task = new ActionTurnToYaw(-90, 1000, driveSystem);
+    public ModeHabLevel1RightDoubleRocket(DriveSystem driveSystem, HatchSystem hatchSystem,
+            AluminatiLimelight limelight) {
+        taskList = new AluminatiAutoTaskList();
+
+        taskList.add(new ActionHabLevel1RightDoubleRocketPart1(driveSystem));
+        taskList.add(new ActionAutoPlaceHatch(driveSystem, hatchSystem, limelight));
+        taskList.add(new ActionHabLevel1RightDoubleRocketPart2(driveSystem));
+        taskList.add(new ActionHabLevel1RightDoubleRocketPart3(driveSystem));
+        taskList.add(new ActionAutoGrabHatch(driveSystem, hatchSystem, limelight));
+        taskList.add(new ActionHabLevel1RightDoubleRocketPart4(driveSystem));
+        taskList.add(new ActionTurnToYaw(-147, 1, driveSystem));
+        taskList.add(new ActionAutoPlaceHatch(driveSystem, hatchSystem, limelight));
     }
 }
