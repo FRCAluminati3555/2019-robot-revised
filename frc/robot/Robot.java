@@ -50,6 +50,7 @@ import frc.robot.auto.ModeExampleTurn;
 import frc.robot.auto.ModeGrabHatch;
 import frc.robot.auto.ModeHabLevel1CargoFrontHatch;
 import frc.robot.auto.ModeHabLevel1Floor;
+import frc.robot.auto.ModeHabLevel1RightDoubleRocket;
 import frc.robot.auto.ModeHabLevel2Floor;
 import frc.robot.auto.ModePlaceHatch;
 import frc.robot.systems.CargoSystem;
@@ -65,7 +66,7 @@ import frc.robot.systems.HatchSystem;
 public class Robot extends AluminatiRobot {
   // Constants
   public static final String[] AUTO_MODES = { "Manual", "DoNothing", "HabLevel2Floor", "HabLevel1Floor",
-      "HabLevel1CargoFrontHatch", "Example", "ExampleTurn", "PlaceHatch", "GrabHatch" };
+      "HabLevel1CargoFrontHatch", "Example", "ExampleTurn", "PlaceHatch", "GrabHatch", "HabLevel1RightDoubleRocket" };
 
   // Robot state
   private RobotMode robotMode;
@@ -341,6 +342,10 @@ public class Robot extends AluminatiRobot {
       // GrabHatch
 
       autoTask = new ModeGrabHatch(driveSystem, hatchSystem, limelight);
+    } else if (auto.equals(AUTO_MODES[9])) {
+      // HabLevel1RightDoubleRocket
+
+      autoTask = new ModeHabLevel1RightDoubleRocket(driveSystem, hatchSystem, limelight);
     }
   }
 
