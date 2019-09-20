@@ -1,5 +1,5 @@
-Max velocity: 110 ft/s
-Max acceleration: 80 ft/s^2
+Max velocity: 126 ft/s
+Max acceleration: 120 ft/s^2
 
 Width: 33.315in
 Length: 38.63in

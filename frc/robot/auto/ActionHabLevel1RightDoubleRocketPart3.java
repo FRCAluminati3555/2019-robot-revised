@@ -22,6 +22,8 @@
 
 package frc.robot.auto;
 
+import com.team319.follower.SrxTrajectory;
+
 import org.aluminati3555.auto.AluminatiAutoTask;
 
 import frc.paths.PathHabLevel1DoubleRocketPart3;
@@ -36,6 +38,13 @@ public class ActionHabLevel1RightDoubleRocketPart3 implements AluminatiAutoTask 
     private DriveSystem driveSystem;
 
     public void start(long timestamp) {
+        // Patch trajectory angle
+        SrxTrajectory path = new PathHabLevel1DoubleRocketPart3();
+        double[][] points = path.centerProfile.points;
+        for (int i = 0; i < points.length; i++) {
+            points[i][3] -= 180;
+        }
+
         driveSystem.startMP(new PathHabLevel1DoubleRocketPart3(), false);
     }
 

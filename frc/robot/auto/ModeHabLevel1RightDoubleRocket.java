@@ -64,6 +64,7 @@ public class ModeHabLevel1RightDoubleRocket implements AluminatiAutoTask {
         taskList.add(new ActionHabLevel1RightDoubleRocketPart1(driveSystem));
         taskList.add(new ActionAutoPlaceHatch(driveSystem, hatchSystem, limelight));
         taskList.add(new ActionHabLevel1RightDoubleRocketPart2(driveSystem));
+        taskList.add(new ActionTurnToYaw(-180, 1, driveSystem));
         taskList.add(new ActionHabLevel1RightDoubleRocketPart3(driveSystem));
         taskList.add(new ActionAutoGrabHatch(driveSystem, hatchSystem, limelight));
         taskList.add(new ActionHabLevel1RightDoubleRocketPart4(driveSystem));
