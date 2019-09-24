@@ -37,7 +37,7 @@ import frc.robot.systems.HatchSystem;
  * @author Caleb Heydon
  */
 public class ActionAutoGrabHatch implements AluminatiAutoTask {
-    private static final double TARGET = 65;
+    private static final double TARGET = 150;
 
     private DriveSystem driveSystem;
     private AluminatiLimelight limelight;
@@ -60,11 +60,11 @@ public class ActionAutoGrabHatch implements AluminatiAutoTask {
         if (state == State.ALIGNING) {
             driveSystem.setUsingLimelight(true);
 
-            double area = limelight.getArea();
-            if (area < TARGET) {
+            double width = limelight.getHorizontal();
+            if (width < TARGET) {
                 boolean hasTarget = limelight.hasTarget();
                 double turn = hasTarget ? -turnController.update(0, limelight.getX(), Timer.getFPGATimestamp()) : 0;
-                double forward = hasTarget ? -forwardController.update(TARGET, area, timestamp) : 0;
+                double forward = hasTarget ? -forwardController.update(TARGET, width, timestamp) : 0;
 
                 driveSystem.manualArcadeDrive(turn, forward);
             } else {

@@ -34,10 +34,10 @@ import frc.robot.systems.DriveSystem;
  */
 public class ActionHabLevel1RightDoubleRocketPart2 implements AluminatiAutoTask {
     private DriveSystem driveSystem;
-    private boolean reversed;
+    private boolean inverted;
 
     public void start(long timestamp) {
-        driveSystem.startMP(new PathHabLevel1DoubleRocketPart2(reversed), false);
+        driveSystem.startMP(new PathHabLevel1DoubleRocketPart2(inverted), false);
     }
 
     public void update(long timestamp) {
@@ -56,8 +56,8 @@ public class ActionHabLevel1RightDoubleRocketPart2 implements AluminatiAutoTask 
         return driveSystem.isMPDone();
     }
 
-    public ActionHabLevel1RightDoubleRocketPart2(DriveSystem driveSystem, boolean reversed) {
+    public ActionHabLevel1RightDoubleRocketPart2(DriveSystem driveSystem, boolean inverted) {
         this.driveSystem = driveSystem;
-        this.reversed = reversed;
+        this.inverted = inverted;
     }
 }

@@ -36,14 +36,14 @@ import frc.robot.systems.DriveSystem;
  */
 public class ActionHabLevel1RightDoubleRocketPart4 implements AluminatiAutoTask {
     private DriveSystem driveSystem;
-    private boolean reversed;
+    private boolean inverted;
 
     public void start(long timestamp) {
         // Patch trajectory angle
-        SrxTrajectory path = new PathHabLevel1DoubleRocketPart4(reversed);
+        SrxTrajectory path = new PathHabLevel1DoubleRocketPart4(inverted);
         double[][] points = path.centerProfile.points;
         for (int i = 0; i < points.length; i++) {
-            if (reversed) {
+            if (inverted) {
                 points[i][3] += 180;
             } else {
                 points[i][3] -= 180;
@@ -69,8 +69,8 @@ public class ActionHabLevel1RightDoubleRocketPart4 implements AluminatiAutoTask 
         return driveSystem.isMPDone();
     }
 
-    public ActionHabLevel1RightDoubleRocketPart4(DriveSystem driveSystem, boolean reversed) {
+    public ActionHabLevel1RightDoubleRocketPart4(DriveSystem driveSystem, boolean inverted) {
         this.driveSystem = driveSystem;
-        this.reversed = reversed;
+        this.inverted = inverted;
     }
 }
