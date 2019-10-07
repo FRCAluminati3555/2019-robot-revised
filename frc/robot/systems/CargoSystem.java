@@ -65,7 +65,7 @@ public class CargoSystem implements AluminatiSystem {
             } else if (operatorJoystick.getPOV() == 180) {
                 frontMotor.set(ControlMode.PercentOutput, -0.5);
                 backMotor.set(ControlMode.PercentOutput, -0.5);
-            } else if (operatorJoystick.getRawButton(12)) {
+            } else if (operatorJoystick.getRawButton(11)) {
                 if (ultrasonicSensor.pidGet() <= 13) {
                     light.forward();
                     frontMotor.set(ControlMode.PercentOutput, 0);
