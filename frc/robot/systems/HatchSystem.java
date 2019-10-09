@@ -56,7 +56,7 @@ public class HatchSystem implements AluminatiSystem {
         if (enabled) {
             // Is the vision system in use
             if (driverJoystick.getRawButton(1)) {
-                limelight();
+                limelightControl();
             } else {
                 driveSystem.setUsingLimelight(false);
             }
@@ -134,7 +134,7 @@ public class HatchSystem implements AluminatiSystem {
     /**
      * Drives the robot using the limelight
      */
-    public void limelight() {
+    public void limelightControl() {
         if (limelight.hasTarget()) {
             // Disable normal driving
             driveSystem.setUsingLimelight(true);
@@ -142,7 +142,7 @@ public class HatchSystem implements AluminatiSystem {
 
             // Note that only the y joystick value is squared here
             driveSystem.manualArcadeDrive(-controller.update(0, x, Timer.getFPGATimestamp()),
-                    driverJoystick.getSquaredY());
+                    driveSystem.isInverted() ? driverJoystick.getSquaredY() : -driverJoystick.getSquaredY());
         } else {
             driveSystem.setUsingLimelight(false);
         }
@@ -157,6 +157,6 @@ public class HatchSystem implements AluminatiSystem {
         this.driverJoystick = driverJoystick;
         this.operatorJoystick = operatorJoystick;
 
-        this.controller = new TurnInPlaceController(0.015, 0, 0.2, 0.35, 0.16);
+        this.controller = new TurnInPlaceController(0.014, 0, 0.2, 0.35, 0.16);
     }
 }

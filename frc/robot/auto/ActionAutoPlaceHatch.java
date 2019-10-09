@@ -37,7 +37,7 @@ import frc.robot.systems.HatchSystem;
  * @author Caleb Heydon
  */
 public class ActionAutoPlaceHatch implements AluminatiAutoTask {
-    private static final double TARGET = 0;
+    private static final double TARGET = 100;
 
     private DriveSystem driveSystem;
     private AluminatiLimelight limelight;
@@ -60,11 +60,11 @@ public class ActionAutoPlaceHatch implements AluminatiAutoTask {
         if (state == State.ALIGNING) {
             driveSystem.setUsingLimelight(true);
 
-            double y = limelight.getVertical();
-            if (y > TARGET) {
+            double area = limelight.getArea();
+            if (area < TARGET) {
                 boolean hasTarget = limelight.hasTarget();
                 double turn = hasTarget ? -turnController.update(0, limelight.getX(), Timer.getFPGATimestamp()) : 0;
-                double forward = hasTarget ? forwardController.update(TARGET, y, timestamp) : 0;
+                double forward = hasTarget ? -forwardController.update(TARGET, area, timestamp) : 0;
 
                 driveSystem.manualArcadeDrive(turn, forward);
             } else {
@@ -105,7 +105,7 @@ public class ActionAutoPlaceHatch implements AluminatiAutoTask {
         this.limelight = limelight;
 
         this.task = new ActionPlaceHatch(hatchSystem);
-        this.turnController = new TurnInPlaceController(0.015, 0, 0.2, 0.35, 0.16);
+        this.turnController = new TurnInPlaceController(0.014, 0, 0.2, 0.35, 0.16);
         this.forwardController = new PIDTurnController(0.1, 0, 0, 0, 0.1, 0.5, 0, 0);
     }
 
