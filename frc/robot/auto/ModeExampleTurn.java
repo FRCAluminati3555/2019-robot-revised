@@ -64,6 +64,6 @@ public class ModeExampleTurn implements AluminatiAutoTask {
 
     public ModeExampleTurn(DriveSystem driveSystem) {
         this.driveSystem = driveSystem;
-        this.task = new ActionTurnToYaw(-90, 1000, driveSystem);
+        this.task = new ActionTurnToYaw(-90, 2000, driveSystem);
     }
 }

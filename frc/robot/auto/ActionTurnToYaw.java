@@ -51,7 +51,7 @@ public class ActionTurnToYaw implements AluminatiAutoTask {
         this.startTime = timestamp;
 
         // Creat new PID controller
-        this.controller = new PIDTurnController(0.01, 0, 0, 0, MIN_OUTPUT, MAX_OUTPUT, maxTime, timestamp);
+        this.controller = new PIDTurnController(0.015, 0, 0, 0, MIN_OUTPUT, MAX_OUTPUT, maxTime, timestamp);
 
         running = true;
     }

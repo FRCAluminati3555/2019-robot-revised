@@ -62,24 +62,6 @@ public class HatchSystem implements AluminatiSystem {
             }
 
             if (operatorJoystick.getRawButtonPressed(4) | driverJoystick.getRawButtonPressed(6)) {
-                // Start grabbing hatch
-
-                // Stop an action if there is one running
-                if (action != null && !action.isComplete()) {
-                    action.stop();
-                }
-
-                // Create new action
-                action = new ActionGrabHatch(this);
-                action.start(timestamp);
-            } else if (operatorJoystick.getRawButtonReleased(4) | driverJoystick.getRawButtonReleased(6)) {
-                // Advance state machine
-                if (action != null) {
-                    action.advanceState();
-                }
-            }
-
-            if (operatorJoystick.getRawButtonPressed(6) | driverJoystick.getRawButtonPressed(7)) {
                 // Start placing hatch
 
                 // Stop an action if there is one running
@@ -89,6 +71,24 @@ public class HatchSystem implements AluminatiSystem {
 
                 // Create new action
                 action = new ActionPlaceHatch(this);
+                action.start(timestamp);
+            } else if (operatorJoystick.getRawButtonReleased(4) | driverJoystick.getRawButtonReleased(6)) {
+                // Advance state machine
+                if (action != null) {
+                    action.advanceState();
+                }
+            }
+
+            if (operatorJoystick.getRawButtonPressed(6) | driverJoystick.getRawButtonPressed(7)) {
+                // Start grabbing hatch
+
+                // Stop an action if there is one running
+                if (action != null && !action.isComplete()) {
+                    action.stop();
+                }
+
+                // Create new action
+                action = new ActionGrabHatch(this);
                 action.start(timestamp);
             } else if (operatorJoystick.getRawButtonReleased(6) | driverJoystick.getRawButtonReleased(7)) {
                 // Advance state machine
@@ -121,14 +121,14 @@ public class HatchSystem implements AluminatiSystem {
      * Closes the claw
      */
     public void clamp() {
-        clamper.forward();
+        clamper.reverse();
     }
 
     /**
      * Opens the claw
      */
     public void release() {
-        clamper.reverse();
+        clamper.forward();
     }
 
     /**
@@ -142,7 +142,7 @@ public class HatchSystem implements AluminatiSystem {
 
             // Note that only the y joystick value is squared here
             driveSystem.manualArcadeDrive(-controller.update(0, x, Timer.getFPGATimestamp()),
-                    driveSystem.isInverted() ? driverJoystick.getSquaredY() : -driverJoystick.getSquaredY());
+                    driveSystem.isInverted() ? -driverJoystick.getSquaredY() : driverJoystick.getSquaredY());
         } else {
             driveSystem.setUsingLimelight(false);
         }

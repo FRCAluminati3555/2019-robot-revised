@@ -37,7 +37,7 @@ import frc.robot.systems.HatchSystem;
  * @author Caleb Heydon
  */
 public class ActionAutoGrabHatch implements AluminatiAutoTask {
-    private static final double TARGET = 100;
+    private static final double TARGET = 26;
 
     private DriveSystem driveSystem;
     private AluminatiLimelight limelight;
@@ -106,7 +106,7 @@ public class ActionAutoGrabHatch implements AluminatiAutoTask {
 
         this.task = new ActionGrabHatch(hatchSystem);
         this.turnController = new TurnInPlaceController(0.014, 0, 0.2, 0.35, 0.16);
-        this.forwardController = new PIDTurnController(0.1, 0, 0, 0, 0.25, 0.5, 0, 0);
+        this.forwardController = new PIDTurnController(0.05, 0, 0, 0, 0.05, 0.5, 0, 0);
     }
 
     private enum State {
