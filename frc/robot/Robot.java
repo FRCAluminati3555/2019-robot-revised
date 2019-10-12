@@ -45,14 +45,10 @@ import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.auto.ModeDoNothing;
-import frc.robot.auto.ModeExample;
 import frc.robot.auto.ModeExampleTurn;
 import frc.robot.auto.ModeGrabHatch;
-import frc.robot.auto.ModeHabLevel1CargoFrontHatch;
-import frc.robot.auto.ModeHabLevel1Floor;
 import frc.robot.auto.ModeHabLevel1LeftDoubleRocket;
 import frc.robot.auto.ModeHabLevel1RightDoubleRocket;
-import frc.robot.auto.ModeHabLevel2Floor;
 import frc.robot.auto.ModePlaceHatch;
 import frc.robot.systems.CargoSystem;
 import frc.robot.systems.ClimberSystem;
@@ -66,9 +62,8 @@ import frc.robot.systems.HatchSystem;
  */
 public class Robot extends AluminatiRobot {
   // Constants
-  public static final String[] AUTO_MODES = { "Manual", "DoNothing", "HabLevel2Floor", "HabLevel1Floor",
-      "HabLevel1CargoFrontHatch", "Example", "ExampleTurn", "PlaceHatch", "GrabHatch", "HabLevel1RightDoubleRocket",
-      "HabLevel1LeftDoubleRocket" };
+  public static final String[] AUTO_MODES = { "Manual", "DoNothing", "ExampleTurn", "PlaceHatch", "GrabHatch",
+      "HabLevel1RightDoubleRocket", "HabLevel1LeftDoubleRocket" };
 
   // Robot state
   private RobotMode robotMode;
@@ -94,13 +89,13 @@ public class Robot extends AluminatiRobot {
   @Override
   public void robotInit() {
     // Configure pid
-    AluminatiData.encoderF = 0.45;
-    AluminatiData.encoderP = 0.75;
+    AluminatiData.encoderF = 0.3;
+    AluminatiData.encoderP = 0.2;
     AluminatiData.encoderI = 0.0001;
     AluminatiData.encoderD = 0.25;
 
     AluminatiData.gyroF = 0.45;
-    AluminatiData.gyroP = 0.75;
+    AluminatiData.gyroP = 2.5;
     AluminatiData.gyroI = 0.0001;
     AluminatiData.gyroD = 0.25;
 
@@ -210,22 +205,13 @@ public class Robot extends AluminatiRobot {
 
   @Override
   public void teleopInit() {
-    matchStarted = true;
-
-    // Set coast mode
-    driveSystem.coast();
-
-    // Stop auto task if one is running
-    if (autoTask != null) {
-      autoTask.stop();
+    if (!matchStarted) {
+      // Put limelight into camera mode and put leds back in pipeline mode if autonomousInit() was not called first
+      limelight.setPipeline(1);
+      limelight.setLEDMode(AluminatiLimelight.LEDMode.CURRENT_PIPELINE);
     }
 
-    // Put limelight into camera mode and put leds back in pipeline mode
-    limelight.setPipeline(1);
-    limelight.setLEDMode(AluminatiLimelight.LEDMode.CURRENT_PIPELINE);
-
-    // Set control mode
-    robotMode = RobotMode.OPERATOR_CONTROL;
+    matchStarted = true;
   }
 
   @Override
@@ -256,7 +242,7 @@ public class Robot extends AluminatiRobot {
 
   @Override
   public void testPeriodic() {
-
+    teleopPeriodic();
   }
 
   /**
@@ -317,38 +303,22 @@ public class Robot extends AluminatiRobot {
 
       autoTask = new ModeDoNothing();
     } else if (auto.equals(AUTO_MODES[2])) {
-      // HabLevel2Floor
-
-      autoTask = new ModeHabLevel2Floor(driveSystem);
-    } else if (auto.equals(AUTO_MODES[3])) {
-      // HabLevel1Floor
-
-      autoTask = new ModeHabLevel1Floor(driveSystem);
-    } else if (auto.equals(AUTO_MODES[4])) {
-      // HabLevel1CargoFrontHatch
-
-      autoTask = new ModeHabLevel1CargoFrontHatch(driveSystem, hatchSystem, limelight);
-    } else if (auto.equals(AUTO_MODES[5])) {
-      // Example
-
-      autoTask = new ModeExample(driveSystem);
-    } else if (auto.equals(AUTO_MODES[6])) {
       // ExampleTurn
 
       autoTask = new ModeExampleTurn(driveSystem);
-    } else if (auto.equals(AUTO_MODES[7])) {
+    } else if (auto.equals(AUTO_MODES[3])) {
       // PlaceHatch
 
       autoTask = new ModePlaceHatch(driveSystem, hatchSystem, limelight);
-    } else if (auto.equals(AUTO_MODES[8])) {
+    } else if (auto.equals(AUTO_MODES[4])) {
       // GrabHatch
 
       autoTask = new ModeGrabHatch(driveSystem, hatchSystem, limelight);
-    } else if (auto.equals(AUTO_MODES[9])) {
+    } else if (auto.equals(AUTO_MODES[5])) {
       // HabLevel1RightDoubleRocket
 
       autoTask = new ModeHabLevel1RightDoubleRocket(driveSystem, hatchSystem, limelight);
-    } else if (auto.equals(AUTO_MODES[10])) {
+    } else if (auto.equals(AUTO_MODES[6])) {
       // HabLevel1LeftDoubleRocket
 
       autoTask = new ModeHabLevel1LeftDoubleRocket(driveSystem, hatchSystem, limelight);

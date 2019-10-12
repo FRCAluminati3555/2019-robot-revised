@@ -43,11 +43,7 @@ public class ActionHabLevel1DoubleRocketPart3 implements AluminatiAutoTask {
         SrxTrajectory path = new PathHabLevel1DoubleRocketPart3(inverted);
         double[][] points = path.centerProfile.points;
         for (int i = 0; i < points.length; i++) {
-            if (inverted) {
-                points[i][3] += 180;
-            } else {
-                points[i][3] -= 180;
-            }
+            points[i][3] -= 180;
         }
 
         driveSystem.startMP(path, false);

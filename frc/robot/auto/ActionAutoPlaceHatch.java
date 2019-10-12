@@ -37,7 +37,7 @@ import frc.robot.systems.HatchSystem;
  * @author Caleb Heydon
  */
 public class ActionAutoPlaceHatch implements AluminatiAutoTask {
-    private static final double TARGET = 25;
+    private static final double TARGET = 23;
 
     private DriveSystem driveSystem;
     private AluminatiLimelight limelight;

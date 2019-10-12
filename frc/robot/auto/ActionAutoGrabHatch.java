@@ -37,7 +37,7 @@ import frc.robot.systems.HatchSystem;
  * @author Caleb Heydon
  */
 public class ActionAutoGrabHatch implements AluminatiAutoTask {
-    private static final double TARGET = 26;
+    private static final double TARGET = 21;
 
     private DriveSystem driveSystem;
     private AluminatiLimelight limelight;
