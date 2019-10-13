@@ -44,7 +44,6 @@ public class PathHabLevel1DoubleRocketPart1 extends SrxTrajectory {
 	public boolean highGear = true;
 
 	double[][] centerPoints = {
-		{0, 0, 10.000, 0},
 		{0.072, 1.435, 10.000, -0.000},
 		{0.359, 4.306, 10.000, -0.000},
 		{1.005, 8.613, 10.000, -0.000},
